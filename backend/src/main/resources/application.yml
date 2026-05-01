@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:aspataaldb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+
+server:
+  port: 8080
+
+hl7:
+  server:
+    port: 2575 # Default MLLP port
