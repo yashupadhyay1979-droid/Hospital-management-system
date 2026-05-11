@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDate;
+import jakarta.persistence.PrePersist;
 
 @Entity
 @Table(name = "patients")
@@ -26,4 +27,13 @@ public class Patient {
 
     @Column(unique = true)
     private String patientId; // Used for HL7 PID
+
+    private LocalDate createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDate.now();
+        }
+    }
 }

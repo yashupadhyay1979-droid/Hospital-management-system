@@ -52,7 +52,7 @@ export default function Settings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Hospital Name</label>
-                  <input type="text" defaultValue="Aspataal General Hospital" className="w-full px-4 py-2 border border-border rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
+                  <input type="text" defaultValue="ASPATAL General Hospital" className="w-full px-4 py-2 border border-border rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Registration Number</label>
@@ -86,11 +86,11 @@ export default function Settings() {
           {activeTab === 'profile' && (
             <div className="space-y-6 animate-in fade-in duration-300">
               <h3 className="text-xl font-bold border-b border-border pb-4">Personal Information</h3>
-              <div className="flex items-center gap-6 mb-8">
-                <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center text-primary text-3xl font-bold border-2 border-primary/20">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
+                <div className="w-24 h-24 shrink-0 rounded-full bg-primary/10 flex items-center justify-center text-primary text-3xl font-bold border-2 border-primary/20">
                   AD
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 text-center sm:text-left">
                   <button className="px-4 py-2 border border-border rounded-xl text-sm font-medium hover:bg-secondary transition-colors cursor-pointer">
                     Change Avatar
                   </button>
@@ -113,7 +113,7 @@ export default function Settings() {
                   <label className="text-sm font-medium">Email Address</label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-                    <input type="email" defaultValue="admin@aspataal.com" className="w-full pl-10 pr-4 py-2 border border-border rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
+                    <input type="email" defaultValue="admin@aspatal.com" className="w-full pl-10 pr-4 py-2 border border-border rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -145,10 +145,10 @@ export default function Settings() {
                   { title: 'System Errors & Warnings', desc: 'Crucial alerts regarding MLLP port bindings and database connectivity.', defaultChecked: true },
                   { title: 'Weekly Reports', desc: 'Receive an email summary of hospital admissions and patient statistics.', defaultChecked: false },
                 ].map((item, i) => (
-                  <div key={i} className="flex items-start justify-between p-4 border border-border rounded-xl bg-secondary/20 hover:bg-secondary/40 transition-colors">
-                    <div>
-                      <h4 className="font-medium">{item.title}</h4>
-                      <p className="text-sm text-muted-foreground mt-1">{item.desc}</p>
+                  <div key={i} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border border-border rounded-xl bg-secondary/20 hover:bg-secondary/40 transition-colors gap-4">
+                    <div className="flex-1 min-w-0 pr-4">
+                      <h4 className="font-medium truncate">{item.title}</h4>
+                      <p className="text-sm text-muted-foreground mt-1 break-words">{item.desc}</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer mt-1">
                       <input type="checkbox" defaultChecked={item.defaultChecked} className="sr-only peer" />
@@ -204,10 +204,10 @@ export default function Settings() {
               </div>
 
               <h3 className="text-xl font-bold border-b border-border pb-4 mt-8 text-destructive">Danger Zone</h3>
-              <div className="border border-destructive/20 bg-destructive/5 rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-                <div>
-                  <h4 className="font-bold text-destructive">JWT Session Invalidation</h4>
-                  <p className="text-sm text-destructive/80 mt-1">Force logout all users globally and invalidate all active JSON Web Tokens.</p>
+              <div className="border border-destructive/20 bg-destructive/5 rounded-xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div className="flex-1 min-w-0 pr-4">
+                  <h4 className="font-bold text-destructive truncate">JWT Session Invalidation</h4>
+                  <p className="text-sm text-destructive/80 mt-1 break-words">Force logout all users globally and invalidate all active JSON Web Tokens.</p>
                 </div>
                 <button className="px-4 py-2 bg-destructive text-destructive-foreground rounded-xl font-medium hover:bg-destructive/90 transition-colors whitespace-nowrap">
                   Invalidate Sessions

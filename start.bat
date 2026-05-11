@@ -1,17 +1,17 @@
 @echo off
 echo =======================================================
-echo        Aspataal HMS - Application Startup Script
+echo        ASPATAL HMS - Application Startup Script
 echo =======================================================
 echo.
 
 echo Starting Spring Boot Backend...
 cd backend
-start "Aspataal Backend" cmd /k ".\mvnw.cmd spring-boot:run"
+start "ASPATAL Backend" cmd /k ".\mvnw.cmd spring-boot:run"
 cd ..
 
 echo Starting React Frontend...
 cd frontend
-start "Aspataal Frontend" cmd /k "npm run dev"
+start "ASPATAL Frontend" cmd /k "npm run dev"
 cd ..
 
 echo.

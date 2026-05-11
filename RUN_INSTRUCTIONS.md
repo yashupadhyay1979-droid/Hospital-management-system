@@ -1,4 +1,4 @@
-# Aspataal Hospital Management System
+# ASPATAL Hospital Management System
 
 This project has been set up to easily run on any local machine. 
 

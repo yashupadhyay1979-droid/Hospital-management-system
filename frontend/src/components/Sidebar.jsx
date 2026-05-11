@@ -1,67 +1,88 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Activity, Users, LayoutDashboard, Settings, FileText, ActivitySquare } from 'lucide-react';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-export function cn(...inputs) {
-  return twMerge(clsx(inputs));
-}
+import {
+  Activity,
+  Users,
+  LayoutDashboard,
+  Settings,
+  FileText,
+  ActivitySquare,
+  LogOut,
+  ChevronRight,
+} from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const navItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-  { icon: Users, label: 'Patients', path: '/patients' },
-  { icon: FileText, label: 'EMR', path: '/emr' },
-  { icon: Activity, label: 'Lab', path: '/lab' },
-  { icon: ActivitySquare, label: 'HL7 Monitor', path: '/hl7' },
-  { icon: Settings, label: 'Settings', path: '/settings' },
+  { icon: LayoutDashboard, label: 'Dashboard', path: '/', color: '#6366f1' },
+  { icon: Users, label: 'Patients', path: '/patients', color: '#3b82f6' },
+  { icon: FileText, label: 'EMR', path: '/emr', color: '#ec4899' },
+  { icon: Activity, label: 'Lab', path: '/lab', color: '#f59e0b' },
+  { icon: ActivitySquare, label: 'HL7 Monitor', path: '/hl7', color: '#10b981' },
+  { icon: Settings, label: 'Settings', path: '/settings', color: '#8b5cf6' },
 ];
 
 export default function Sidebar() {
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   return (
-    <div className="w-64 bg-white border-r border-border h-screen flex flex-col shadow-sm">
-      <div className="p-6 flex items-center gap-3">
-        <div className="bg-primary p-2 rounded-xl text-primary-foreground">
-          <Activity size={24} />
+    <aside className="sidebar">
+      {/* Logo */}
+      <div className="sidebar-logo">
+        <div className="sidebar-logo-icon">
+          <Activity size={22} strokeWidth={2.5} />
         </div>
-        <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent-foreground">
-          Aspataal OS
-        </h1>
+        <div>
+          <h1 className="sidebar-brand">ASPATAL</h1>
+          <p className="sidebar-brand-sub">HMS v2.0</p>
+        </div>
       </div>
-      
-      <nav className="flex-1 px-4 py-6 space-y-1">
+
+      <div className="sidebar-section-label">Navigation</div>
+
+      {/* Nav */}
+      <nav className="sidebar-nav">
         {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const isActive =
+            item.path === '/'
+              ? location.pathname === '/'
+              : location.pathname.startsWith(item.path);
           return (
             <Link
               key={item.path}
               to={item.path}
-              className={cn(
-                "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200",
-                isActive 
-                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/20" 
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-              )}
+              className={`sidebar-nav-item ${isActive ? 'active' : ''}`}
+              style={isActive ? { '--item-color': item.color } : {}}
             >
-              <item.icon size={20} className={cn(isActive ? "text-primary-foreground" : "text-muted-foreground")} />
-              <span className="font-medium">{item.label}</span>
+              <span
+                className="sidebar-nav-icon"
+                style={{ color: isActive ? item.color : undefined }}
+              >
+                <item.icon size={19} />
+              </span>
+              <span className="sidebar-nav-label">{item.label}</span>
+              {isActive && <ChevronRight size={14} className="sidebar-nav-chevron" />}
             </Link>
           );
         })}
       </nav>
-      
-      <div className="p-4 border-t border-border">
-        <div className="flex items-center gap-3 px-4 py-3">
-          <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center font-bold text-primary">
-            AD
-          </div>
-          <div>
-            <p className="font-medium text-sm">Admin User</p>
-            <p className="text-xs text-muted-foreground">System Administrator</p>
-          </div>
+
+      <div className="sidebar-spacer" />
+
+      {/* User card */}
+      <div className="sidebar-user">
+        <div className="sidebar-user-avatar">{user?.avatar || 'AD'}</div>
+        <div className="sidebar-user-info">
+          <p className="sidebar-user-name">{user?.name || 'Admin User'}</p>
+          <p className="sidebar-user-role">{user?.role || 'Administrator'}</p>
         </div>
+        <button
+          onClick={logout}
+          className="sidebar-logout-btn"
+          title="Sign out"
+        >
+          <LogOut size={17} />
+        </button>
       </div>
-    </div>
+    </aside>
   );
 }

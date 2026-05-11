@@ -26,6 +26,7 @@ export default function HL7Monitor() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState('ADT^A01 (Admit Patient)');
   const [testPayload, setTestPayload] = useState(TEMPLATES['ADT^A01 (Admit Patient)']);
+  const [builderCategory, setBuilderCategory] = useState('ADT');
   
   const { data: messages, isLoading, error, refetch, isRefetching } = useQuery({
     queryKey: ['hl7_messages'],
@@ -98,16 +99,16 @@ export default function HL7Monitor() {
                 <div 
                   key={msg.id} 
                   onClick={() => setSelectedMessage(msg)}
-                  className={`p-3 rounded-xl border cursor-pointer transition-all ${selectedMessage?.id === msg.id ? 'bg-primary/5 border-primary shadow-sm' : 'border-border hover:bg-secondary hover:border-muted-foreground/30'}`}
+                  className={`p-4 rounded-xl border cursor-pointer transition-all ${selectedMessage?.id === msg.id ? 'bg-primary/5 border-primary shadow-sm' : 'border-border hover:bg-secondary hover:border-muted-foreground/30'}`}
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="font-mono font-bold text-sm bg-secondary px-2 py-0.5 rounded text-secondary-foreground">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="font-mono font-bold text-sm bg-secondary px-2.5 py-1 rounded-md text-secondary-foreground inline-block">
                       {msg.messageType || 'UNKNOWN'}
                     </span>
                     {msg.status === 'SUCCESS' ? (
-                      <CheckCircle2 size={16} className="text-emerald-500" />
+                      <CheckCircle2 size={18} className="text-emerald-500 shrink-0 ml-2" />
                     ) : (
-                      <XCircle size={16} className="text-destructive" />
+                      <XCircle size={18} className="text-destructive shrink-0 ml-2" />
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground mb-1">
@@ -145,7 +146,7 @@ export default function HL7Monitor() {
                 
                 <div>
                   <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2">Raw Message (ER7)</h4>
-                  <pre className="bg-[#1e1e2e] text-[#a6accd] p-4 rounded-xl text-xs font-mono overflow-x-auto shadow-inner leading-relaxed whitespace-pre-wrap">
+                  <pre className="bg-[#1e1e2e] text-[#a6accd] p-4 rounded-xl text-xs font-mono overflow-x-auto shadow-inner leading-relaxed whitespace-pre-wrap break-all">
                     {selectedMessage.rawMessage.replace(/\r/g, '\n')}
                   </pre>
                 </div>
@@ -199,38 +200,120 @@ export default function HL7Monitor() {
               {selectedTemplate === 'Custom Builder' ? (
                 <div className="bg-secondary/20 p-4 rounded-xl border border-border space-y-4">
                   <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">Message Parameters</h4>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-medium">Message Type</label>
-                      <select className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white" id="builder_type">
-                        <option value="ADT^A01">ADT^A01 (Admit)</option>
-                        <option value="ADT^A04">ADT^A04 (Register)</option>
-                        <option value="ADT^A08">ADT^A08 (Update)</option>
-                      </select>
-                    </div>
+                  
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium">Message Category</label>
+                    <select 
+                      value={builderCategory}
+                      onChange={(e) => setBuilderCategory(e.target.value)}
+                      className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white"
+                    >
+                      <option value="ADT">ADT (Patient Administration)</option>
+                      <option value="ORU">ORU (Lab Results / Observation)</option>
+                      <option value="MDM">MDM (EMR Clinical Note / Document)</option>
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 border-t border-border pt-4">
+                    {/* Common Fields */}
                     <div className="space-y-1.5">
                       <label className="text-xs font-medium">Patient ID (PID-3)</label>
                       <input type="text" id="builder_pid" defaultValue="PID77777" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white" />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium">First Name</label>
+                      <label className="text-xs font-medium">Patient First Name</label>
                       <input type="text" id="builder_fn" defaultValue="Alex" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white" />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium">Last Name</label>
+                      <label className="text-xs font-medium">Patient Last Name</label>
                       <input type="text" id="builder_ln" defaultValue="Mercer" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white" />
                     </div>
+
+                    {builderCategory === 'ADT' && (
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-medium">Event Type</label>
+                        <select className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white" id="builder_type">
+                          <option value="ADT^A01">ADT^A01 (Admit)</option>
+                          <option value="ADT^A04">ADT^A04 (Register)</option>
+                          <option value="ADT^A08">ADT^A08 (Update)</option>
+                        </select>
+                      </div>
+                    )}
+
+                    {builderCategory === 'ORU' && (
+                      <>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-medium">Test Name</label>
+                          <input type="text" id="builder_test_name" defaultValue="GLU^Glucose Fasting" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white" />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-medium">Result Value</label>
+                          <input type="text" id="builder_result" defaultValue="95" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white" />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-medium">Unit</label>
+                          <input type="text" id="builder_unit" defaultValue="mg/dL" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white" />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-medium">Ref Range</label>
+                          <input type="text" id="builder_range" defaultValue="70-100" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white" />
+                        </div>
+                      </>
+                    )}
+
+                    {builderCategory === 'MDM' && (
+                      <>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-medium">Doc First Name</label>
+                          <input type="text" id="builder_doc_fn" defaultValue="Gregory" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white" />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-medium">Doc Last Name</label>
+                          <input type="text" id="builder_doc_ln" defaultValue="House" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white" />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-medium">Condition</label>
+                          <input type="text" id="builder_condition" defaultValue="Hypertension" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white" />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-medium">ICD-10</label>
+                          <input type="text" id="builder_icd" defaultValue="I10" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white" />
+                        </div>
+                        <div className="space-y-1.5 col-span-2">
+                          <label className="text-xs font-medium">Prescription</label>
+                          <input type="text" id="builder_rx" defaultValue="Lisinopril 10mg PO Daily" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white" />
+                        </div>
+                      </>
+                    )}
                   </div>
                   <div className="flex justify-end pt-2">
                     <button 
                       type="button"
                       onClick={() => {
-                        const type = document.getElementById('builder_type').value;
                         const pid = document.getElementById('builder_pid').value;
                         const fn = document.getElementById('builder_fn').value;
                         const ln = document.getElementById('builder_ln').value;
                         const timestamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
-                        const generated = `MSH|^~\\&|CUSTOM_APP|CUSTOM_FAC|REC_APP|REC_FAC|${timestamp}||${type}|MSG${Math.floor(Math.random()*1000)}|P|2.4\rEVN|${type.split('^')[1]}|${timestamp}\rPID|1||${pid}||${ln}^${fn}||19900101|U\rPV1|1|O|CUSTOM_CLINIC`;
+                        
+                        let generated = '';
+                        if (builderCategory === 'ADT') {
+                          const type = document.getElementById('builder_type').value;
+                          generated = `MSH|^~\\&|CUSTOM_APP|CUSTOM_FAC|REC_APP|REC_FAC|${timestamp}||${type}|MSG${Math.floor(Math.random()*1000)}|P|2.4\rEVN|${type.split('^')[1]}|${timestamp}\rPID|1||${pid}||${ln}^${fn}||19900101|U\rPV1|1|O|CUSTOM_CLINIC`;
+                        } else if (builderCategory === 'ORU') {
+                          const test = document.getElementById('builder_test_name').value;
+                          const res = document.getElementById('builder_result').value;
+                          const unit = document.getElementById('builder_unit').value;
+                          const range = document.getElementById('builder_range').value;
+                          generated = `MSH|^~\\&|LAB_APP|LAB_FAC|REC_APP|REC_FAC|${timestamp}||ORU^R01|MSG${Math.floor(Math.random()*1000)}|P|2.4\rPID|1||${pid}||${ln}^${fn}||19900101|U\rOBR|1|||${test}|||${timestamp}\rOBX|1|NM|${test}||${res}|${unit}|${range}|N|||F`;
+                        } else if (builderCategory === 'MDM') {
+                          const dfn = document.getElementById('builder_doc_fn').value;
+                          const dln = document.getElementById('builder_doc_ln').value;
+                          const cond = document.getElementById('builder_condition').value;
+                          const icd = document.getElementById('builder_icd').value;
+                          const rx = document.getElementById('builder_rx').value;
+                          generated = `MSH|^~\\&|EMR_APP|EMR_FAC|REC_APP|REC_FAC|${timestamp}||MDM^T02|MSG${Math.floor(Math.random()*1000)}|P|2.4\rPID|1||${pid}||${ln}^${fn}||19900101|U\rTXA|1|CN|TX|${timestamp}|||||||||||${dln}^${dfn}\rOBX|1|CE|${icd}^ICD-10||${cond}||||||F\rOBX|2|TX|RX^Prescription||${rx}||||||F`;
+                        }
+                        
                         setTestPayload(generated);
                       }}
                       className="text-xs bg-primary text-primary-foreground px-3 py-1.5 rounded-lg hover:bg-primary/90"

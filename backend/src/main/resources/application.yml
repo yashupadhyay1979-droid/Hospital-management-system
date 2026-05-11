@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:aspataaldb
+    url: jdbc:h2:mem:aspataldb
     driverClassName: org.h2.Driver
     username: sa
     password: password

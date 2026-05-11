@@ -1,6 +1,6 @@
 @echo off
 echo =======================================================
-echo     Aspataal HMS - Setup and Installation Script
+echo     ASPATAL HMS - Setup and Installation Script
 echo =======================================================
 echo.
 

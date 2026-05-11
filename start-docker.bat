@@ -1,6 +1,6 @@
 @echo off
 echo =======================================================
-echo     Aspataal HMS - Docker Environment Startup
+echo     ASPATAL HMS - Docker Environment Startup
 echo =======================================================
 echo.
 echo Checking if Docker is running...
